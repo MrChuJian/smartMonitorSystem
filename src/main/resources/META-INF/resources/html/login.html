@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+	<table>
+		<tr>
+			<td><input type="text" id="username" placeholder="鐢ㄦ埛鍚�"
+				style="width: 120px;"></td>
+		</tr>
+		<tr>
+			<td><input type="password" id="password" placeholder="瀵嗙爜"
+				style="width: 120px;"></td>
+		</tr>
+		<tr>
+			<td><button type="button" onclick="return submitForm()">鐧婚檰</button></td>
+		</tr>
+	</table>
+	<script> 
+		function $v(id){
+			return document.getElementById(id).value
+		}
+		function submitForm(){ 
+			var options = {};
+			options.method="POST";
+			options.url="/testlink/api/v1/user/login";
+			options.data="username="+$v("username")+"&password="+$v("password")
+			ajax(options,function(text,http){ 
+				var json = JSON.parse(text)
+				if(json.code==0){
+					location.href="/paas/swagger-ui.html"
+				}
+			})
+			return false;
+		}
+		function ajax(options, cb) { 
+			var xmlhttp = null;
+			if (window.XMLHttpRequest) {// code for IE7, Firefox, Mozilla, etc.
+				xmlhttp = new XMLHttpRequest();
+			} else if (window.ActiveXObject) {// code for IE5, IE6
+				xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+			}
+			if (xmlhttp != null) {
+				xmlhttp.open(options.method, options.url, true);
+				xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+				xmlhttp.onreadystatechange = function() {
+					if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+						cb(xmlhttp.responseText,xmlhttp);
+					}
+				};
+				xmlhttp.send(options.data);
+			}
+		}
+	</script>
+</body>
+</html>

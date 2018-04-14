@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 
-@Configuration
 @SpringBootApplication
 @ComponentScan(value = { "com.fjy" })
 public class SampleTomcatApplication  {

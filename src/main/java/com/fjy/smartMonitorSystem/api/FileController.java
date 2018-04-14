@@ -5,6 +5,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.UUID;
 
@@ -15,6 +16,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,17 +25,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fjy.smartMonitorSystem.model.Entity;
+import com.fjy.smartMonitorSystem.service.FileService;
 import com.fjy.smartMonitorSystem.util.MimeTypeUtil;
 import com.fjy.smartMonitorSystem.util.StringUtil;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-@Api(value = "文件API", tags = { "文件API" })
+@Api(value = "文件控制器", tags = { "文件API" })
 @Controller
 @RequestMapping("/file")
 public class FileController {
 	
+	@Autowired
+	private FileService fileService;
 	private static final Log logger = LogFactory.getLog(FileController.class);
 
 	@ApiOperation(value = "上传文件", notes = "上传文件")
@@ -41,7 +46,7 @@ public class FileController {
 	public ResponseEntity<Entity<String>> upload(HttpServletRequest request,
 			@RequestParam("upfile") MultipartFile[] myfiles) {
 		System.out.println(1);
-		String fileName = "";
+		String uuidName = "";
 		try {
 			for (MultipartFile myfile : myfiles) {
 				if (myfile.isEmpty()) {
@@ -59,18 +64,18 @@ public class FileController {
 				}
 				// 生成新文件名
 				Date date = new Date();
-				String fileId = StringUtil.getUUID(date, UUID.randomUUID());
+				String uuidId = StringUtil.getUUID(date, UUID.randomUUID());
 				// 获取文件存储的路径
 				String basePath = "/tmp/files";
 				String folderPath = basePath;
 				// 文件名称
-				fileName = fileId + "." + extName.toLowerCase();
+				uuidName = uuidId + "." + extName.toLowerCase();
 				String filePath = folderPath + "/upload";
 				File f = new File(filePath);
 				if (!f.exists()) {
 					f.mkdirs();
 				}
-				filePath = filePath + File.separator + fileName;
+				filePath = filePath + File.separator + uuidName;
 
 				// 生成新文件名
 				logger.info("文件存储的位置为" + filePath);
@@ -83,15 +88,21 @@ public class FileController {
 					// "上传文件过程中出错"
 					return Entity.builder(400).build(20, "上传文件过程中出错", null);
 				}
+				com.fjy.smartMonitorSystem.model.File file2 = new com.fjy.smartMonitorSystem.model.File();
+				file2.setFileName(fileOriginalName);
+				file2.setUuidName(uuidName);
+				file2.setMimeType(myfile.getContentType());
+				file2.setCreateTime(new Timestamp(System.currentTimeMillis()));
+				fileService.saveFile(file2);
 			}
-			return Entity.success(fileName);
+			return Entity.success(uuidName);
 		} catch (Throwable t) {
 			logger.error("上传文件失败", t);
 			return Entity.builder(500).build(500, "上传文件失败", null);
 		}
 	}
 	
-	@ApiOperation(value = "下载文件", notes = "下载文件")
+	@ApiOperation(value = "下载文件", notes = "根据fileName下载文件")
 	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity<Entity<String>> download(HttpServletRequest request, HttpServletResponse response,
 			@RequestParam(value = "fileName", required = true) String fileName,
@@ -99,17 +110,18 @@ public class FileController {
 		BufferedInputStream bis = null;
 		BufferedOutputStream bos = null;
 		File file = null;
+		String uuidName = fileService.findUuidNameByFileName(fileName);
 		try {
-			if (fileName.indexOf("/") >= 0) {
+			if (uuidName.indexOf("/") >= 0) {
 				return Entity.builder(400).build(10, "文件ID异常", null);
 			}
-			String fileName1 = fileName;
-			fileName = "/tmp/files/upload/" + fileName;
-			file = new File(fileName);
-			if (MimeTypeUtil.getContentType(fileName) != null)
-				response.setContentType(MimeTypeUtil.getContentType(fileName));
+			String fileName1 = uuidName;
+			uuidName = "/tmp/files/upload/" + uuidName;
+			file = new File(uuidName);
+			if (MimeTypeUtil.getContentType(uuidName) != null)
+				response.setContentType(MimeTypeUtil.getContentType(uuidName));
 			request.setCharacterEncoding("UTF-8");
-			if (StringUtil.isNotNull(fileName)) {
+			if (StringUtil.isNotNull(uuidName)) {
 				response.setHeader("Content-disposition",
 						"attachment; filename=" + new String(fileName1.getBytes("utf-8"), "ISO8859-1"));
 			}
@@ -121,20 +133,20 @@ public class FileController {
 			while (-1 != (bytesRead = bis.read(buff, 0, buff.length))) {
 				bos.write(buff, 0, bytesRead);
 			}
-			return Entity.success(fileName);
+			return Entity.success(uuidName);
 		} catch (Throwable t) {
-			logger.error("找不到指定文件:" + fileName);
+			logger.error("找不到指定文件:" + uuidName);
 			// 如果找不到对应的logo就把默认的logo添加上去
 			try {
-				fileName = "/tmp/files" + File.separator + File.separator
+				uuidName = "/tmp/files" + File.separator + File.separator
 						+ "upload" + File.separator + "prj_default.png";
-				file = new File(fileName);
-				if (MimeTypeUtil.getContentType(fileName) != null)
-					response.setContentType(MimeTypeUtil.getContentType(fileName));
+				file = new File(uuidName);
+				if (MimeTypeUtil.getContentType(uuidName) != null)
+					response.setContentType(MimeTypeUtil.getContentType(uuidName));
 				request.setCharacterEncoding("UTF-8");
-				if (StringUtil.isNotNull(fileName)) {
+				if (StringUtil.isNotNull(uuidName)) {
 					response.setHeader("Content-disposition",
-							"attachment; filename=" + new String(fileName.getBytes("utf-8"), "ISO8859-1"));
+							"attachment; filename=" + new String(uuidName.getBytes("utf-8"), "ISO8859-1"));
 				}
 				response.setHeader("Content-Length", String.valueOf(file.length()));
 				bis = new BufferedInputStream(new FileInputStream(file));
@@ -144,8 +156,8 @@ public class FileController {
 				while (-1 != (bytesRead = bis.read(buff, 0, buff.length))) {
 					bos.write(buff, 0, bytesRead);
 				}
-				logger.info("返回的图片为:" + fileName);
-				return Entity.success(fileName);
+				logger.info("返回的图片为:" + uuidName);
+				return Entity.success(uuidName);
 			} catch (Exception e) {
 
 				return Entity.builder(500).build(500, "查找文件失败", null);
