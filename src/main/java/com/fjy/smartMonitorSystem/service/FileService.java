@@ -4,7 +4,11 @@ import com.fjy.smartMonitorSystem.model.File;
 
 public interface FileService {
 	
-	public String findUuidNameByFileName(String fileName);
+	public File findFileByFileName(String fileName);
 	
 	public String saveFile(File file);
+
+	public File findLastImage();
+
+	public void deleteLikeCreateTime(String bb);
 }

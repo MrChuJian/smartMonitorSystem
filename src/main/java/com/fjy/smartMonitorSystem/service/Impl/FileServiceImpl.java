@@ -16,14 +16,24 @@ public class FileServiceImpl implements FileService{
 	private FileMapper fileMapper;
 
 	@Override
-	public String findUuidNameByFileName(String fileName) {
+	public File findFileByFileName(String fileName) {
 		List<File> files = fileMapper.findByFileName(fileName);
-		return files.get(files.size()-1).getUuidName();
+		return files.get(files.size()-1);
 	}
 
 	@Override
 	public String saveFile(File file) {
 		fileMapper.saveFile(file);
 		return "ojbk";
+	}
+
+	@Override
+	public File findLastImage() {
+		return fileMapper.findLastImage();
+	}
+
+	@Override
+	public void deleteLikeCreateTime(String createTime) {
+		fileMapper.deleteLikeCreateTime(createTime);
 	}
 }

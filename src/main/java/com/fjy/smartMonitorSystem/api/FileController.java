@@ -7,11 +7,11 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.UUID;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
@@ -23,16 +23,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-
 import com.fjy.smartMonitorSystem.model.Entity;
 import com.fjy.smartMonitorSystem.service.FileService;
+import com.fjy.smartMonitorSystem.util.FileUtil;
 import com.fjy.smartMonitorSystem.util.MimeTypeUtil;
 import com.fjy.smartMonitorSystem.util.StringUtil;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-@Api(value = "文件控制器", tags = { "文件API" })
+@Api(value = "文件控制器", tags = { "文件控制器" })
 @Controller
 @RequestMapping("/file")
 public class FileController {
@@ -43,10 +42,9 @@ public class FileController {
 
 	@ApiOperation(value = "上传文件", notes = "上传文件")
 	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<Entity<String>> upload(HttpServletRequest request,
+	public ResponseEntity<Entity<List<String>>> upload(HttpServletRequest request,
 			@RequestParam("upfile") MultipartFile[] myfiles) {
-		System.out.println(1);
-		String uuidName = "";
+		List<String> fileNames = new LinkedList<>();
 		try {
 			for (MultipartFile myfile : myfiles) {
 				if (myfile.isEmpty()) {
@@ -69,13 +67,23 @@ public class FileController {
 				String basePath = "/tmp/files";
 				String folderPath = basePath;
 				// 文件名称
-				uuidName = uuidId + "." + extName.toLowerCase();
-				String filePath = folderPath + "/upload";
+				String uuidName = uuidId + "." + extName.toLowerCase();
+				
+				com.fjy.smartMonitorSystem.model.File file2 = new com.fjy.smartMonitorSystem.model.File();
+				file2.setFileName(fileOriginalName);
+				file2.setUuidName(uuidName);
+				file2.setMimeType(myfile.getContentType());
+				file2.setCreateTime(new Timestamp(System.currentTimeMillis()));
+//				file2.getCreateTime().get
+				String dateStr = file2.getCreateTime().toString();
+		    	int i = dateStr.indexOf(":");
+		    	String dateName = dateStr.substring(0, i).replaceAll(" ", "-");
+		    	String filePath = folderPath + "/upload/" + extName + File.separator + dateName + File.separator;
 				File f = new File(filePath);
 				if (!f.exists()) {
 					f.mkdirs();
 				}
-				filePath = filePath + File.separator + uuidName;
+				filePath = filePath + uuidName;
 
 				// 生成新文件名
 				logger.info("文件存储的位置为" + filePath);
@@ -88,14 +96,10 @@ public class FileController {
 					// "上传文件过程中出错"
 					return Entity.builder(400).build(20, "上传文件过程中出错", null);
 				}
-				com.fjy.smartMonitorSystem.model.File file2 = new com.fjy.smartMonitorSystem.model.File();
-				file2.setFileName(fileOriginalName);
-				file2.setUuidName(uuidName);
-				file2.setMimeType(myfile.getContentType());
-				file2.setCreateTime(new Timestamp(System.currentTimeMillis()));
 				fileService.saveFile(file2);
+				fileNames.add(fileOriginalName);
 			}
-			return Entity.success(uuidName);
+			return Entity.success(fileNames);
 		} catch (Throwable t) {
 			logger.error("上传文件失败", t);
 			return Entity.builder(500).build(500, "上传文件失败", null);
@@ -110,13 +114,18 @@ public class FileController {
 		BufferedInputStream bis = null;
 		BufferedOutputStream bos = null;
 		File file = null;
-		String uuidName = fileService.findUuidNameByFileName(fileName);
+		com.fjy.smartMonitorSystem.model.File file2 = fileService.findFileByFileName(fileName);
+		String uuidName = file2.getUuidName();
 		try {
 			if (uuidName.indexOf("/") >= 0) {
 				return Entity.builder(400).build(10, "文件ID异常", null);
 			}
 			String fileName1 = uuidName;
-			uuidName = "/tmp/files/upload/" + uuidName;
+			String dateStr = file2.getCreateTime().toString();
+	    	int i = dateStr.indexOf(":");
+	    	String dateName = dateStr.substring(0, i).replaceAll(" ", "-");
+	    	String extName = FilenameUtils.getExtension(file2.getFileName());
+			uuidName = "/tmp/files/upload/" + extName + File.separator + dateName + File.separator + uuidName;
 			file = new File(uuidName);
 			if (MimeTypeUtil.getContentType(uuidName) != null)
 				response.setContentType(MimeTypeUtil.getContentType(uuidName));
@@ -172,6 +181,46 @@ public class FileController {
 			} catch (Exception e2) {
 			}
 		}
-
+	}
+	
+	@ApiOperation(value = "下载文件", notes = "根据fileName下载文件")
+	@RequestMapping(value="/lastimage", method = RequestMethod.GET)
+	public ResponseEntity<Entity<String>> lastImage(HttpServletRequest request, HttpServletResponse response,
+			@RequestParam(value = "fileName", required = true) String fileName,
+			@RequestParam(value = "isdefault", required = false) String isdefault) {
+		try {
+			return Entity.success("seccess");
+		} catch (Exception e) {
+			
+		} finally {
+			return Entity.success("seccess");
+		}
+	}
+	
+	public boolean deleteDir() {
+		com.fjy.smartMonitorSystem.model.File file =  fileService.findLastImage();
+		String dateStr = file.getCreateTime().toString();
+		int index = dateStr.indexOf(":");;
+		String DateDir = dateStr.substring(0, index).replaceAll(" ", "-");
+		String bashDir = "/tmp/files/upload/jpeg/";
+		File fileDir = new File(bashDir);
+		if ((!fileDir.exists()) || (!fileDir.isDirectory())) {
+            System.out.println("目录" + bashDir + "不存在！");
+            return false;
+        }
+		File[] files = fileDir.listFiles();
+		for (File file2 : files) {
+			if (file2.isDirectory()) {
+				String DirName = file2.getName();
+				if(DirName != DateDir) {
+					int i2 = DirName.lastIndexOf('-');
+			    	String bb = DirName.substring(0, i2) + " " + DirName.substring(i2 + 1) + ":%";
+			    	System.out.println(bb);
+					fileService.deleteLikeCreateTime(bb);
+					FileUtil.deleteDirectory(bashDir + DirName);
+				}
+            }
+		}
+		return true;
 	}
 }

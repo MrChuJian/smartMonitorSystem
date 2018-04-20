@@ -13,3 +13,14 @@ CREATE TABLE `file` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `user`;
+CREATE TABLE `user` (
+  `id` int(255) NOT NULL AUTO_INCREMENT,
+  `username` varchar(255) DEFAULT NULL,
+  `password` varchar(255) NOT NULL,
+  `phone` varchar(255) NOT NULL,
+  `sex` int(255),
+  `addr` varchar(255) DEFAULT NULL,
+  `icon` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
