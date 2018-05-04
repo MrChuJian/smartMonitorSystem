@@ -13,6 +13,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 
 import com.fjy.smartMonitorSystem.api.FileController;
+import com.fjy.smartMonitorSystem.netty.SimpleChatServer;
 
 
 @SpringBootApplication
@@ -30,6 +31,19 @@ public class SampleTomcatApplication  {
     			fileController.deleteDir();
     		} 
     	}, 0, 60*60*1000);
+    	System.out.println("1");
+    	Thread thread = new Thread() {
+			@Override
+			public void run() {
+				try {
+					new SimpleChatServer(8088).run();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		};
+		thread.start();
+    	
 		System.out.println("系统启动成功");
 	}
 }

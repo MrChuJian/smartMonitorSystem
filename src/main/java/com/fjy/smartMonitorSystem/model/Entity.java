@@ -46,6 +46,12 @@ public class Entity<T> implements Serializable{
 		this.data = data;
 	}
 	
+	
+	@Override
+	public String toString() {
+		return "Entity [code=" + code + ", msg=" + msg + ", data=" + data + "]";
+	}
+
 	/**
 	 * 
 	 * Entity.builder(200).header("a", "a").build(1, "msg", data);
@@ -83,7 +89,7 @@ public class Entity<T> implements Serializable{
 		return builder.build(code, msg, null);
 	}
 
-	public static class EntityBuilder {
+	public static class EntityBuilder implements Serializable{
 
 		private final HttpHeaders headers = new HttpHeaders();
 		private final HttpStatus status;
