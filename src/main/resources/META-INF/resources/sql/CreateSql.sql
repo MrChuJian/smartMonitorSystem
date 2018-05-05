@@ -24,3 +24,12 @@ CREATE TABLE `user` (
   `icon` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `sensor`;
+CREATE TABLE `sensor` (
+  `id` int(255) NOT NULL AUTO_INCREMENT,
+  `type` varchar(255) DEFAULT NULL,
+  `data` DOUBLE DEFAULT NULL,
+  `createTime` timestamp,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;

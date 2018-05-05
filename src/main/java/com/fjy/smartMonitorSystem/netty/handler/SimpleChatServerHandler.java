@@ -77,7 +77,7 @@ public class SimpleChatServerHandler extends ChannelInboundHandlerAdapter {
         //将收到的信息转发给全部的客户端channel
         Entity entity = (Entity)msg;
         for(Channel channel:channels){
-            if(channel != incomming) {
+            if(channel == incomming) {
             	entity.setMsg("you");
                 channel.writeAndFlush(entity);
             }else{

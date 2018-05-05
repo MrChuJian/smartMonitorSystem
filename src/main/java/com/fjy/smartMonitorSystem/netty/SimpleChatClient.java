@@ -43,7 +43,6 @@ public class SimpleChatClient {
 				entity = null;
 				entity = new Entity<String>(1, "ahahaha", in.readLine());
 				channel.writeAndFlush(entity);
-				
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -53,7 +52,7 @@ public class SimpleChatClient {
 	}
 
 	public static void main(String[] args) throws Exception {
-		new SimpleChatClient("localhost", 8088).run();
+		new SimpleChatClient("120.77.34.35", 8088).run();
 	}
 
 }
