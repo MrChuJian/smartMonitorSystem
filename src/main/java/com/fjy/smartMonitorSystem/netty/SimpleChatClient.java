@@ -3,8 +3,7 @@ package com.fjy.smartMonitorSystem.netty;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-import com.fjy.smartMonitorSystem.model.Entity;
-import com.fjy.smartMonitorSystem.model.Test;
+import com.fjy.smartMonitorSystem.model.SB;
 import com.fjy.smartMonitorSystem.netty.init.SimpleChatClientInitializer;
 
 import io.netty.bootstrap.Bootstrap;
@@ -37,22 +36,28 @@ public class SimpleChatClient {
 			Channel channel = bootstrap.connect(host, port).sync().channel();
 
 			BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-			
-			Entity entity;
+		
+			SB sb = new SB<String>(1, "11", "11");
+			channel.writeAndFlush(sb);
 			while (true) {
-				entity = null;
-				entity = new Entity<String>(1, "ahahaha", in.readLine());
-				channel.writeAndFlush(entity);
+				sb.setData(in.readLine());
+				channel.writeAndFlush(sb);
 			}
+//			while(true) {
+//				in.readLine();
+//				entity = null;
+//				entity = new Entity<Test>(1, "ahahaha", new Test(1, "bb", "aa"));
+//				System.out.println(11);
+//				channel.writeAndFlush(entity);
+//				System.out.println(22);
+//			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			group.shutdownGracefully();
 		}
 	}
-
 	public static void main(String[] args) throws Exception {
-		new SimpleChatClient("120.77.34.35", 8088).run();
+		new SimpleChatClient("localhost", 8088).run();
 	}
-
 }

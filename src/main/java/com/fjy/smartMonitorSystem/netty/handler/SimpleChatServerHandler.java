@@ -1,6 +1,6 @@
 package com.fjy.smartMonitorSystem.netty.handler;
 
-import com.fjy.smartMonitorSystem.model.Entity;
+import com.fjy.smartMonitorSystem.model.SB;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -28,8 +28,10 @@ public class SimpleChatServerHandler extends ChannelInboundHandlerAdapter {
         //获取连接的channel
         Channel incomming = ctx.channel();
         //通知所有已经连接到服务器的客户端，有一个新的通道加入
+        SB sb = new SB<String>(1, incomming.remoteAddress().toString(), "");
         for(Channel channel:channels){
-            channel.writeAndFlush("[SERVER]-"+incomming.remoteAddress()+"加入\n");
+        	sb.setData("[SERVER]-"+incomming.remoteAddress()+"加入\n");
+            channel.writeAndFlush(sb);
         }
         channels.add(ctx.channel());
     }
@@ -43,39 +45,20 @@ public class SimpleChatServerHandler extends ChannelInboundHandlerAdapter {
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
         //获取连接的channel
         Channel incomming = ctx.channel();
+        SB sb = new SB<String>(1, incomming.remoteAddress().toString(), "");
         for(Channel channel:channels){
-            channel.writeAndFlush("[SERVER]-"+incomming.remoteAddress()+"离开\n");
+        	sb.setData("[SERVER]-"+incomming.remoteAddress()+"离开\n");
+            channel.writeAndFlush(sb);
         }
         //从服务端的channelGroup中移除当前离开的客户端
         channels.remove(ctx.channel());
     }
 
-    /**
-     * 每当从服务端读到客户端写入信息时,将信息转发给其他客户端的Channel.
-     * @param ctx
-     * @param msg
-     * @throws Exception
-     */
-    protected void channelRead0(ChannelHandlerContext ctx, String entity) throws Exception {
-    	System.out.println(entity);
-        Channel incomming = ctx.channel();
-        //将收到的信息转发给全部的客户端channel
-        for(Channel channel:channels){
-            if(channel != incomming) {
-//                channel.writeAndFlush("[" + incomming.remoteAddress() + "]" + entity.getData() + "\n");
-                channel.writeAndFlush("[" + incomming.remoteAddress() + "]" + entity + "\n");
-            }else{
-//                channel.writeAndFlush("[You]"+entity.getData()+"\n");
-                channel.writeAndFlush("[You]"+entity+"\n");
-            }
-        }
-    }
-    
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         Channel incomming = ctx.channel();
         //将收到的信息转发给全部的客户端channel
-        Entity entity = (Entity)msg;
+        SB entity = (SB)msg;
         for(Channel channel:channels){
             if(channel == incomming) {
             	entity.setMsg("you");

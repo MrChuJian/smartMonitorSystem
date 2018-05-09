@@ -2,14 +2,14 @@ package com.fjy.smartMonitorSystem.model;
 
 import java.io.Serializable;
 
-public class Test implements Serializable{
+public class SB<T> implements Serializable{
 
 	private int code;
 	private String msg;
-	private String data;
-	public Test() {
+	private T data;
+	public SB() {
 	}
-	public Test(int code, String msg, String data) {
+	public SB(int code, String msg, T data) {
 		this.code = code;
 		this.msg = msg;
 		this.data = data;
@@ -30,10 +30,10 @@ public class Test implements Serializable{
 	public void setMsg(String msg) {
 		this.msg = msg;
 	}
-	public String getData() {
+	public T getData() {
 		return data;
 	}
-	public void setData(String data) {
+	public void setData(T data) {
 		this.data = data;
 	}
 	

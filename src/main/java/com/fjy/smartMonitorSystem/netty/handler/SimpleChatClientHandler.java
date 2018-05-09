@@ -1,12 +1,11 @@
 package com.fjy.smartMonitorSystem.netty.handler;
 
 
-import com.fjy.smartMonitorSystem.model.Entity;
+import com.fjy.smartMonitorSystem.model.SB;
 import com.fjy.smartMonitorSystem.util.LogUtil;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.channel.SimpleChannelInboundHandler;
 
 /**
  * Created by louyuting on 16/12/8.
@@ -22,6 +21,18 @@ public class SimpleChatClientHandler extends ChannelInboundHandlerAdapter {
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 		System.out.println(msg);
+	}
+	
+	@Override
+	public void channelActive(ChannelHandlerContext ctx) throws Exception {
+		super.channelActive(ctx);
+		new Thread() {
+			public void run() {
+				SB entity = new SB(1, "shabi", "channelActive:bbbb");
+				ctx.writeAndFlush(entity);
+			};
+		}.start();
+		
 	}
 
 	@Override
