@@ -13,6 +13,6 @@ mvn clean package -Dmaven.test.skip=true
 
 cd ${CDIR}
 
-docker build -t 120.77.34.35:5000/smartMonitorSystem:${version} .
+docker build -t 120.77.34.35:5000/smartmonitorsystem:${version} .
 
-docker push 120.77.34.35:5000/smartMonitorSystem:${version}
+docker push 120.77.34.35:5000/smartmonitorsystem:${version}
