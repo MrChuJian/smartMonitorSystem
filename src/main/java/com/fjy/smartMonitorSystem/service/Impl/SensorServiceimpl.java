@@ -26,8 +26,8 @@ public class SensorServiceimpl implements SensorService {
 	}
 
 	@Override
-	public List<Sensor> getByTime(SensorVo sensorVo) {
-		Integer time = sensorVo.getTime();
+	public List<Sensor> getByTimeAndType(SensorVo sensorVo) {
+		Long time = sensorVo.getTime().longValue();
 		switch (sensorVo.getUnit()) {
 		case "y":
 			sensorVo.setSelectTime(new Timestamp(System.currentTimeMillis() - time * 1000 * 60 * 60 * 24 * 30 * 12));
@@ -50,7 +50,7 @@ public class SensorServiceimpl implements SensorService {
 		default:
 			break;
 		}
-		List<Sensor> sensors = sensorMapper.getByTime(sensorVo);
+		List<Sensor> sensors = sensorMapper.getByTimeAndType(sensorVo);
 		return sensors;
 	}
 

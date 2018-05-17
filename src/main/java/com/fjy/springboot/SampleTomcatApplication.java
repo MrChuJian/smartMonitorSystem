@@ -30,7 +30,7 @@ public class SampleTomcatApplication  {
     		public void run(){ 
     			fileController.deleteDir();
     		} 
-    	}, 0, 60*60*1000);
+    	}, 0, 24L*60*60*1000);
     	System.out.println("1");
     	Thread thread = new Thread() {
 			@Override

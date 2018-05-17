@@ -3,6 +3,7 @@ package com.fjy.smartMonitorSystem.netty;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
+import com.fjy.smartMonitorSystem.model.FileUploadFile;
 import com.fjy.smartMonitorSystem.model.SB;
 import com.fjy.smartMonitorSystem.netty.init.SimpleChatClientInitializer;
 
@@ -36,11 +37,13 @@ public class SimpleChatClient {
 			Channel channel = bootstrap.connect(host, port).sync().channel();
 
 			BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-		
-			SB sb = new SB<String>(1, "11", "11");
+			FileUploadFile file = new FileUploadFile();
+			file.setFileName("abc");
+			file.setBytes("shabi".getBytes());
+			SB sb = new SB<FileUploadFile>(1, "11", file);
 			channel.writeAndFlush(sb);
 			while (true) {
-				sb.setData(in.readLine());
+				in.readLine();
 				channel.writeAndFlush(sb);
 			}
 //			while(true) {
@@ -58,6 +61,6 @@ public class SimpleChatClient {
 		}
 	}
 	public static void main(String[] args) throws Exception {
-		new SimpleChatClient("localhost", 8088).run();
+		new SimpleChatClient("120.77.34.35", 8088).run();
 	}
 }

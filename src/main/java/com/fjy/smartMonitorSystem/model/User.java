@@ -9,6 +9,7 @@ public class User {
 	private Integer sex;
 	private String addr;
 	private File image;
+	private String avatar;
 	
 	public Integer getId() {
 		return id;
@@ -51,6 +52,12 @@ public class User {
 	}
 	public void setImage(File image) {
 		this.image = image;
+	}
+	public String getAvatar() {
+		return avatar;
+	}
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
 	}
 	
 	

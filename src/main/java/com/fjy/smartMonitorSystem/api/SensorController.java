@@ -42,12 +42,12 @@ public class SensorController {
 	
 	@ApiOperation(value = "查询一段时间内的type传感器数据", notes = "type:问陈琦传了什么type \n\r unit:y M d h m s")
 	@RequestMapping(value = "/{type}/last/{time}/{unit}", method = RequestMethod.GET)
-	public ResponseEntity<Entity<List<Sensor>>> getByTime(@PathVariable String type,@PathVariable String unit,@PathVariable Integer time){
+	public ResponseEntity<Entity<List<Sensor>>> getByTimeAndType(@PathVariable String type,@PathVariable String unit,@PathVariable Integer time){
 		SensorVo sensorVo = new SensorVo();
 		sensorVo.setType(type);
 		sensorVo.setTime(time);
 		sensorVo.setUnit(unit);
-		List<Sensor> sensors = sensorService.getByTime(sensorVo);
+		List<Sensor> sensors = sensorService.getByTimeAndType(sensorVo);
 		return Entity.success(sensors);
 	}
 	
