@@ -64,10 +64,20 @@ public class UserController {
 	@ApiOperation(value = "注册", notes = "测试专用验证码:123456 \n\r")
 	@RequestMapping(value = "/logup", method = RequestMethod.POST)
 	public ResponseEntity<Entity<String>> logup(HttpServletRequest request,
-			@RequestBody UserVo user,
-			@RequestBody MultipartFile avatar) {
-		String phone = user.getPhone();
-		String code = user.getCode();
+			@RequestParam String username,
+			@RequestParam String password,
+			@RequestParam String phone,
+			@RequestParam String addr,
+			@RequestParam String code,
+			@RequestParam String sex,
+			@RequestParam MultipartFile avatar) {
+		UserVo user = new UserVo();
+		user.setUsername(username);
+		user.setPassword(password);
+		user.setPhone(phone);
+		user.setAddr(addr);
+		user.setCode(code);
+		user.setSex(sex);
 		if (!code.toLowerCase().equals(request.getSession().getAttribute(phone + "-logup-code"))
 				&& !code.equals("123456")) {
 			return Entity.failure(38, "验证码错误");
