@@ -7,11 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.fjy.smartMonitorSystem.model.Entity;
+import com.fjy.smartMonitorSystem.model.Location;
 import com.fjy.smartMonitorSystem.model.Sensor;
 import com.fjy.smartMonitorSystem.model.Vo.SensorVo;
 import com.fjy.smartMonitorSystem.service.SensorService;
@@ -38,6 +40,21 @@ public class SensorController {
 			return Entity.success(sensor.toString());
 		};
 		return Entity.failure(0, "保存失败哦");
+	}
+	
+	@ApiOperation(value = "上传位置数据", notes = "longitude经度 \n\r latitude纬度\n\r lonSign南北半球\n\r laSign东西半球")
+	@RequestMapping(value = "/emm/location/", method = RequestMethod.POST)
+	public ResponseEntity<Entity<String>> savelocation(@RequestBody Location location){
+		sensorService.saveLocation(location);
+		
+		return Entity.success("ojbk");
+	}
+	
+	@ApiOperation(value = "获得最新位置数据", notes = "获得最新位置数据")
+	@RequestMapping(value = "/emmm/location/", method = RequestMethod.GET)
+	public ResponseEntity<Entity<Location>> getLastLocation(){
+		Location location = sensorService.getLocation();
+		return Entity.success(location);
 	}
 	
 	@ApiOperation(value = "查询一段时间内的type传感器数据", notes = "type:问陈琦传了什么type \n\r unit:y M d h m s")

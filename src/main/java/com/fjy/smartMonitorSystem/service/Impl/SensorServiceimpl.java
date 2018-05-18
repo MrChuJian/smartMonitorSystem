@@ -6,7 +6,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fjy.smartMonitorSystem.dao.LocationMapper;
 import com.fjy.smartMonitorSystem.dao.SensorMapper;
+import com.fjy.smartMonitorSystem.model.Location;
 import com.fjy.smartMonitorSystem.model.Sensor;
 import com.fjy.smartMonitorSystem.model.Vo.SensorVo;
 import com.fjy.smartMonitorSystem.service.SensorService;
@@ -16,10 +18,12 @@ public class SensorServiceimpl implements SensorService {
 
 	@Autowired
 	private SensorMapper sensorMapper;
-	
+	@Autowired
+	private LocationMapper locationMapper;
+
 	@Override
 	public boolean sava(Sensor sensor) {
-		if(sensorMapper.save(sensor) > 0) {
+		if (sensorMapper.save(sensor) > 0) {
 			return true;
 		}
 		return false;
@@ -62,6 +66,19 @@ public class SensorServiceimpl implements SensorService {
 	@Override
 	public List<Sensor> getAll() {
 		return sensorMapper.getAll();
+	}
+
+	@Override
+	public void saveLocation(Location location) {
+		location.setCreateTime(new Timestamp(System.currentTimeMillis()));
+		locationMapper.save(location);
+
+	}
+
+	@Override
+	public Location getLocation() {
+		Location location = locationMapper.getlast();
+		return location;
 	}
 
 }
