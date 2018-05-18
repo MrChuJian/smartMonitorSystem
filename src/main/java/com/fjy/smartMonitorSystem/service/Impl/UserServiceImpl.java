@@ -42,8 +42,7 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public void logup(UserVo user) throws Exception {
-		MultipartFile avatar = user.getAvatar();
+	public void logup(UserVo user, MultipartFile avatar) throws Exception {
 		if(avatar != null) {
 			String fileOriginalName = avatar.getOriginalFilename();
 			String extName = FilenameUtils.getExtension(fileOriginalName);

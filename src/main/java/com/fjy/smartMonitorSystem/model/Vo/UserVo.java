@@ -7,7 +7,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class UserVo implements Serializable{
 
 	private static final long serialVersionUID = 1L;
-	private MultipartFile avatar;
 	private String avatarUrl;
 	private String username;
 	private String password;
@@ -26,12 +25,6 @@ public class UserVo implements Serializable{
 	}
 	public void setCode(String code) {
 		this.code = code;
-	}
-	public MultipartFile getAvatar() {
-		return avatar;
-	}
-	public void setAvatar(MultipartFile avatar) {
-		this.avatar = avatar;
 	}
 	public String getUsername() {
 		return username;

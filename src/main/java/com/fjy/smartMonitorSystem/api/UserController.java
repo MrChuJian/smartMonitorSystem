@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.tomcat.jni.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.fjy.smartMonitorSystem.model.Entity;
 import com.fjy.smartMonitorSystem.model.User;
@@ -63,7 +63,9 @@ public class UserController {
 
 	@ApiOperation(value = "注册", notes = "测试专用验证码:123456 \n\r")
 	@RequestMapping(value = "/logup", method = RequestMethod.POST)
-	public ResponseEntity<Entity<String>> logup(HttpServletRequest request, @RequestBody UserVo user) {
+	public ResponseEntity<Entity<String>> logup(HttpServletRequest request,
+			@RequestBody UserVo user,
+			@RequestBody MultipartFile avatar) {
 		String phone = user.getPhone();
 		String code = user.getCode();
 		if (!code.toLowerCase().equals(request.getSession().getAttribute(phone + "-logup-code"))
@@ -76,7 +78,7 @@ public class UserController {
 		}
 		request.getSession().removeAttribute(phone + "-logup-code");
 		try {
-			userService.logup(user);
+			userService.logup(user,avatar);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return Entity.builder(400).build(20, "上传文件过程中出错", null);
