@@ -26,7 +26,7 @@ public class VideoTimer extends TimerTask {
 		if(videos != null && videos.size() > 0) {
 			for (Channel cannel : videos) {
 				SB<byte[]> sb = new SB<>();
-				sb.setCode(6);
+				sb.setCode(5);
 				sb.setMsg("");
 				String filepath = images[i];
 				i = (i + 1) % 2;

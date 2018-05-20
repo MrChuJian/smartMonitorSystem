@@ -77,13 +77,20 @@ public class SimpleChatServerHandler extends ChannelInboundHandlerAdapter {
         	if(!videos.contains(incomming)) {
         		videos.add(incomming);
         	}
-        	
+        	entity = new SB<>();
+        	entity.setCode(200);
+        	entity.setMsg("开始播放");
+        	incomming.writeAndFlush(entity);
         }
         
         if(entity.getCode() == 4) {
         	if(videos.contains(incomming)) {
         		videos.remove(incomming);
         	}
+        	entity = new SB<>();
+        	entity.setCode(200);
+        	entity.setMsg("暂停播放");
+        	incomming.writeAndFlush(entity);
         }
         
         
