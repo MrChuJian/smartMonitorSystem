@@ -16,7 +16,8 @@ import io.netty.util.concurrent.GlobalEventExecutor;
 public class SimpleChatServerHandler extends ChannelInboundHandlerAdapter {
 	
 
-    public static ChannelGroup channels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
+    public static ChannelGroup chats = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
+    public static ChannelGroup videos = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 
     /**
      * 每当服务端收到新的客户端连接时,客户端的channel存入ChannelGroup列表中,并通知列表中其他客户端channel
@@ -29,11 +30,11 @@ public class SimpleChatServerHandler extends ChannelInboundHandlerAdapter {
         Channel incomming = ctx.channel();
         //通知所有已经连接到服务器的客户端，有一个新的通道加入
         SB sb = new SB<String>(1, incomming.remoteAddress().toString(), "");
-        for(Channel channel:channels){
+        for(Channel channel:chats){
         	sb.setData("[SERVER]-"+incomming.remoteAddress()+"加入\n");
             channel.writeAndFlush(sb);
         }
-        channels.add(ctx.channel());
+        chats.add(ctx.channel());
     }
 
     /**
@@ -46,12 +47,13 @@ public class SimpleChatServerHandler extends ChannelInboundHandlerAdapter {
         //获取连接的channel
         Channel incomming = ctx.channel();
         SB sb = new SB<String>(1, incomming.remoteAddress().toString(), "");
-        for(Channel channel:channels){
+        for(Channel channel:chats){
         	sb.setData("[SERVER]-"+incomming.remoteAddress()+"离开\n");
             channel.writeAndFlush(sb);
         }
         //从服务端的channelGroup中移除当前离开的客户端
-        channels.remove(ctx.channel());
+        chats.remove(ctx.channel());
+        videos.remove(ctx.channel());
     }
 
     @Override
@@ -59,15 +61,32 @@ public class SimpleChatServerHandler extends ChannelInboundHandlerAdapter {
         Channel incomming = ctx.channel();
         //将收到的信息转发给全部的客户端channel
         SB entity = (SB)msg;
-        for(Channel channel:channels){
-            if(channel == incomming) {
-            	entity.setMsg("you");
-                channel.writeAndFlush(entity);
-            }else{
-            	entity.setMsg(incomming.remoteAddress() + "");
-                channel.writeAndFlush(entity);
+        if(entity.getCode() == 1 || entity.getCode() == 2) {
+        	for(Channel channel:chats){
+                if(channel == incomming) {
+                	entity.setMsg("you");
+                    channel.writeAndFlush(entity);
+                }else{
+                	entity.setMsg(incomming.remoteAddress() + "");
+                    channel.writeAndFlush(entity);
+                }
             }
         }
+        
+        if(entity.getCode() == 3) {
+        	if(!videos.contains(incomming)) {
+        		videos.add(incomming);
+        	}
+        	
+        }
+        
+        if(entity.getCode() == 4) {
+        	if(videos.contains(incomming)) {
+        		videos.remove(incomming);
+        	}
+        }
+        
+        
     }
     
 

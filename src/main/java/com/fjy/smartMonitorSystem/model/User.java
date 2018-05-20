@@ -6,7 +6,7 @@ public class User {
 	private String username;
 	private String password;
 	private String phone;
-	private Integer sex;
+	private String sex;
 	private String addr;
 	private File image;
 	private String avatar;
@@ -35,10 +35,10 @@ public class User {
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
-	public Integer getSex() {
+	public String getSex() {
 		return sex;
 	}
-	public void setSex(Integer sex) {
+	public void setSex(String sex) {
 		this.sex = sex;
 	}
 	public String getAddr() {

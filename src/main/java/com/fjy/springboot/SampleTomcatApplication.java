@@ -3,7 +3,6 @@ package com.fjy.springboot;
 
 
 import java.util.Timer;
-import java.util.TimerTask;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -12,8 +11,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 
-import com.fjy.smartMonitorSystem.api.FileController;
-import com.fjy.smartMonitorSystem.netty.SimpleChatServer;
+import com.fjy.smartMonitorSystem.Thread.NettyServerThread;
+import com.fjy.smartMonitorSystem.Timer.DeleteDirTimer;
+import com.fjy.smartMonitorSystem.Timer.VideoTimer;
 
 
 @SpringBootApplication
@@ -23,25 +23,11 @@ public class SampleTomcatApplication  {
 	private static Log logger = LogFactory.getLog(SampleTomcatApplication.class);
 	public static void main(String[] args) {
 		applicationContext = SpringApplication.run(SampleTomcatApplication.class, args);
-		FileController fileController = applicationContext.getBean(FileController.class);
     	Timer timer;
     	timer = new Timer(true);
-    	timer.schedule(new TimerTask() {
-    		public void run(){ 
-    			fileController.deleteDir();
-    		} 
-    	}, 0, 24L*60*60*1000);
-    	System.out.println("1");
-    	Thread thread = new Thread() {
-			@Override
-			public void run() {
-				try {
-					new SimpleChatServer(8088).run();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		};
+    	timer.schedule(new DeleteDirTimer(), 0, 24L*60*60*1000);
+    	timer.schedule(new VideoTimer(), 0, 1000);
+    	Thread thread = new NettyServerThread();
 		thread.start();
     	
 		System.out.println("系统启动成功");

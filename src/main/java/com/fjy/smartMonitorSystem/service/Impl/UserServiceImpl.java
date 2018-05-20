@@ -1,17 +1,12 @@
 package com.fjy.smartMonitorSystem.service.Impl;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
 import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,23 +14,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fjy.smartMonitorSystem.dao.UserMapper;
-import com.fjy.smartMonitorSystem.model.Entity;
 import com.fjy.smartMonitorSystem.model.User;
 import com.fjy.smartMonitorSystem.model.Vo.UserVo;
 import com.fjy.smartMonitorSystem.service.UserService;
 import com.fjy.smartMonitorSystem.util.StringUtil;
 
 @Service
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
 	private static Log logger = LogFactory.getLog(UserServiceImpl.class);
 	@Autowired
 	UserMapper userMapper;
-	
+
 	@Override
 	public boolean existPhone(String phone) {
 		User user = userMapper.findUserByPhone(phone);
-		if(user != null) {
+		if (user != null) {
 			return true;
 		}
 		return false;
@@ -43,7 +37,7 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public void logup(UserVo user, MultipartFile avatar) throws Exception {
-		if(avatar != null) {
+		if (avatar != null) {
 			String fileOriginalName = avatar.getOriginalFilename();
 			String extName = FilenameUtils.getExtension(fileOriginalName);
 			if (StringUtil.isNull(extName)) {
@@ -82,7 +76,7 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public boolean validatePhoneAndPassword(User user) {
 		User user1 = userMapper.findUserByPhoneAndPassword(user);
-		if(user1 == null) {
+		if (user1 == null) {
 			return false;
 		}
 		return true;
@@ -100,7 +94,7 @@ public class UserServiceImpl implements UserService{
 		}
 		// 生成新文件名
 		logger.info("文件存储的位置为" + filePath);
-//		IOUtils.read
+		// IOUtils.read
 		byte[] avatar = FileUtils.readFileToByteArray(file);
 		return avatar;
 	}
