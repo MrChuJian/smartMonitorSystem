@@ -61,13 +61,21 @@ public class SimpleChatServerHandler extends ChannelInboundHandlerAdapter {
         Channel incomming = ctx.channel();
         //将收到的信息转发给全部的客户端channel
         SB entity = (SB)msg;
-        if(entity.getCode() == 1 || entity.getCode() == 2) {
+        if(entity.getCode() == 1) {
         	for(Channel channel:chats){
                 if(channel == incomming) {
-                	entity.setMsg("you");
                     channel.writeAndFlush(entity);
                 }else{
-                	entity.setMsg(incomming.remoteAddress() + "");
+                    channel.writeAndFlush(entity);
+                }
+            }
+        }
+        
+        if(entity.getCode() == 2) {
+        	for(Channel channel:chats){
+                if(channel == incomming) {
+                    channel.writeAndFlush(entity);
+                }else{
                     channel.writeAndFlush(entity);
                 }
             }
