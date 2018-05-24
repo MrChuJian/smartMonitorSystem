@@ -27,7 +27,7 @@ public class SensorServiceimpl implements SensorService {
 	@Override
 	public boolean sava(Sensor sensor) {
 		if (sensorMapper.save(sensor) > 0) {
-			SimpleChatServerHandler.chats.writeAndFlush(new SB<Sensor>(11, sensor.getType(), sensor));
+			SimpleChatServerHandler.chats.writeAndFlush(new SB<Double>(11, sensor.getType(), sensor.getData()));
 			return true;
 		}
 		return false;
