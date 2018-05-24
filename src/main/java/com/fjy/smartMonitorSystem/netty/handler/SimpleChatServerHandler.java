@@ -30,7 +30,7 @@ public class SimpleChatServerHandler extends ChannelInboundHandlerAdapter {
         //获取连接的channel
         Channel incomming = ctx.channel();
         //通知所有已经连接到服务器的客户端，有一个新的通道加入
-        SB sb = new SB<String>(1, incomming.remoteAddress().toString(), "");
+        SB sb = new SB<String>(31, incomming.remoteAddress().toString(), "");
         for(Channel channel:chats){
         	sb.setData("[SERVER]-"+incomming.remoteAddress()+"加入\n");
             channel.writeAndFlush(sb);

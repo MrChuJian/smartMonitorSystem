@@ -8,6 +8,8 @@ import java.io.InputStream;
 import java.util.TimerTask;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import com.fjy.smartMonitorSystem.model.SB;
 import com.fjy.smartMonitorSystem.netty.handler.SimpleChatServerHandler;
@@ -19,6 +21,7 @@ public class VideoTimer extends TimerTask {
 	
 	private static Integer i = 0;
 	private static String[] images = {"/images/sha.jpeg", "/images/bi.jpeg"};
+	private Log logger = LogFactory.getLog(VideoTimer.class);
 
 	@Override
 	public void run() {
