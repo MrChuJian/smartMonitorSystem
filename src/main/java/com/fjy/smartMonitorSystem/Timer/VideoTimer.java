@@ -19,7 +19,6 @@ public class VideoTimer extends TimerTask {
 	
 	private static Integer i = 0;
 	private static String[] images = {"/images/sha.jpeg", "/images/bi.jpeg"};
-	private static String com_path = VideoTimer.class.getClassLoader().getResource("./").getPath();
 
 	@Override
 	public void run() {
