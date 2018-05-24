@@ -14,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -204,6 +203,28 @@ public class UserController {
 		} else {
 			return Entity.failure(2, "token错误或过期,请重新登陆");
 		}
+	}
+	
+	@ApiOperation(value = "获取用户信息头像", notes = "获取用户信息头像 ")
+	@RequestMapping(value = "/phone/{phone}/avatar", method = RequestMethod.GET)
+	public ResponseEntity<Entity<byte[]>> getAvatar(HttpServletRequest request,
+			@PathVariable String phone) {
+		UserVo user = userService.getByPhone(phone);
+		String avatarUrl = user.getAvatarUrl();
+		byte[]  avatar = null;
+		if(avatarUrl != null && !avatarUrl.equals("")) {
+			int i = avatarUrl.lastIndexOf("/");
+			try {
+				avatar = userService.getAvatar(avatarUrl.substring(i));
+			} catch (Exception e) {
+				e.printStackTrace();
+				return Entity.failure(2, "文件不存在");
+			}
+			return Entity.success(avatar);
+		} else {
+			return Entity.failure(1, "没有头像");
+		}
+		
 	}
 
 }

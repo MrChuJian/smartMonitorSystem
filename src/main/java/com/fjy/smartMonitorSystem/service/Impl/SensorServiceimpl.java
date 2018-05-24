@@ -9,8 +9,11 @@ import org.springframework.stereotype.Service;
 import com.fjy.smartMonitorSystem.dao.LocationMapper;
 import com.fjy.smartMonitorSystem.dao.SensorMapper;
 import com.fjy.smartMonitorSystem.model.Location;
+import com.fjy.smartMonitorSystem.model.SB;
 import com.fjy.smartMonitorSystem.model.Sensor;
 import com.fjy.smartMonitorSystem.model.Vo.SensorVo;
+import com.fjy.smartMonitorSystem.netty.handler.SimpleChatClientHandler;
+import com.fjy.smartMonitorSystem.netty.handler.SimpleChatServerHandler;
 import com.fjy.smartMonitorSystem.service.SensorService;
 
 @Service
@@ -24,6 +27,7 @@ public class SensorServiceimpl implements SensorService {
 	@Override
 	public boolean sava(Sensor sensor) {
 		if (sensorMapper.save(sensor) > 0) {
+			SimpleChatServerHandler.chats.writeAndFlush(new SB<Sensor>(11, sensor.getType(), sensor));
 			return true;
 		}
 		return false;
@@ -72,7 +76,7 @@ public class SensorServiceimpl implements SensorService {
 	public void saveLocation(Location location) {
 		location.setCreateTime(new Timestamp(System.currentTimeMillis()));
 		locationMapper.save(location);
-
+		SimpleChatServerHandler.chats.writeAndFlush(new SB<Location>(12, "", location));
 	}
 
 	@Override

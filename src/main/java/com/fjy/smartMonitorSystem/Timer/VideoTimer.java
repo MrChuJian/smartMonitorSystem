@@ -18,7 +18,8 @@ import io.netty.channel.group.ChannelGroup;
 public class VideoTimer extends TimerTask {
 	
 	private static Integer i = 0;
-	String[] images = {"images/sha.jpeg", "images/bi.jpeg"};
+	private static String[] images = {"/images/sha.jpeg", "/images/bi.jpeg"};
+	private static String com_path = VideoTimer.class.getClassLoader().getResource("./").getPath();
 
 	@Override
 	public void run() {
@@ -28,7 +29,7 @@ public class VideoTimer extends TimerTask {
 				SB<byte[]> sb = new SB<>();
 				sb.setCode(5);
 				sb.setMsg("");
-				String filepath = images[i];
+				String filepath = com_path + images[i];
 				i = (i + 1) % 2;
 				File file = new File(filepath);
 				InputStream is = null;

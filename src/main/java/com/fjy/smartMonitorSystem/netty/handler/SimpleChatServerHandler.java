@@ -1,6 +1,7 @@
 package com.fjy.smartMonitorSystem.netty.handler;
 
 import com.fjy.smartMonitorSystem.model.SB;
+import com.fjy.smartMonitorSystem.util.SocketUtil;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -101,6 +102,21 @@ public class SimpleChatServerHandler extends ChannelInboundHandlerAdapter {
         	incomming.writeAndFlush(entity);
         }
         
+        if(entity.getCode() == 21) {
+        	boolean isSend = false;
+        	isSend = SocketUtil.send((Integer)entity.getData());
+        	if(isSend) {
+        		entity = new SB<>();
+            	entity.setCode(200);
+            	entity.setMsg("发送成功");
+            	incomming.writeAndFlush(entity);
+        	} else {
+        		entity = new SB<>();
+            	entity.setCode(404);
+            	entity.setMsg("硬件没有连接服务器");
+            	incomming.writeAndFlush(entity);
+        	}
+        }
         
     }
     

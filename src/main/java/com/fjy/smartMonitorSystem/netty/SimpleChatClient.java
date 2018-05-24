@@ -40,7 +40,7 @@ public class SimpleChatClient {
 			FileUploadFile file = new FileUploadFile();
 			file.setFileName("abc");
 			file.setBytes("shabi".getBytes());
-			SB sb = new SB<FileUploadFile>(1, "11", file);
+			SB sb = new SB<Integer>(21, "11", 1);
 			channel.writeAndFlush(sb);
 			while (true) {
 				in.readLine();
@@ -61,6 +61,6 @@ public class SimpleChatClient {
 		}
 	}
 	public static void main(String[] args) throws Exception {
-		new SimpleChatClient("120.77.34.35", 8088).run();
+		new SimpleChatClient("localhost", 8088).run();
 	}
 }
