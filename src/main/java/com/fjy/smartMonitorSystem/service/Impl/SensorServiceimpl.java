@@ -76,7 +76,7 @@ public class SensorServiceimpl implements SensorService {
 	public void saveLocation(Location location) {
 		location.setCreateTime(new Timestamp(System.currentTimeMillis()));
 		locationMapper.save(location);
-		SimpleChatServerHandler.chats.writeAndFlush(new SB<Location>(12, "", location));
+		SimpleChatServerHandler.chats.writeAndFlush(new SB<Location>(12, "localtion", location));
 	}
 
 	@Override
