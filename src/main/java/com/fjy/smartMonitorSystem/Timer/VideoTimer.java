@@ -20,19 +20,18 @@ import io.netty.channel.group.ChannelGroup;
 public class VideoTimer extends TimerTask {
 	
 	private static Integer i = 0;
-	private static String[] images = {"/images/sha.jpeg", "/images/bi.jpeg"};
+	private static String[] images = {"/tmp/files/images/sha.jpeg", "/tmp/files/images/bi.jpeg"};
 	private Log logger = LogFactory.getLog(VideoTimer.class);
 
 	@Override
 	public void run() {
 		ChannelGroup videos = SimpleChatServerHandler.videos;
-		String com_path = VideoTimer.class.getClassLoader().getResource("./").getPath();
 		if(videos != null && videos.size() > 0) {
 			for (Channel cannel : videos) {
 				SB<byte[]> sb = new SB<>();
 				sb.setCode(5);
 				sb.setMsg("");
-				String filepath = com_path + images[i];
+				String filepath = images[i];
 				i = (i + 1) % 2;
 				File file = new File(filepath);
 				InputStream is = null;
