@@ -24,6 +24,7 @@ public class VideoTimer extends TimerTask {
 	@Override
 	public void run() {
 		ChannelGroup videos = SimpleChatServerHandler.videos;
+		String com_path = VideoTimer.class.getClassLoader().getResource("./").getPath();
 		if(videos != null && videos.size() > 0) {
 			for (Channel cannel : videos) {
 				SB<byte[]> sb = new SB<>();
