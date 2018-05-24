@@ -44,7 +44,15 @@ public class SensorController {
 	
 	@ApiOperation(value = "上传位置数据", notes = "longitude经度 \n\r latitude纬度\n\r lonSign南北半球\n\r laSign东西半球")
 	@RequestMapping(value = "/emm/location/", method = RequestMethod.POST)
-	public ResponseEntity<Entity<String>> savelocation(@RequestBody Location location){
+	public ResponseEntity<Entity<String>> savelocation(@RequestParam(required=true) String longitude,
+			@RequestParam(required=true) String latitude,
+			@RequestParam(required=true) String lonSign,
+			@RequestParam(required=true) String laSign){
+		Location location = new Location();
+		location.setLaSign(laSign);
+		location.setLatitude(latitude);
+		location.setLongitude(longitude);
+		location.setLonSign(lonSign);
 		sensorService.saveLocation(location);
 		
 		return Entity.success("ojbk");
