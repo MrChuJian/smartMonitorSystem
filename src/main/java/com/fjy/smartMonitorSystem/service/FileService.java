@@ -11,4 +11,6 @@ public interface FileService {
 	public File findLastImage();
 
 	public void deleteLikeCreateTime(String bb);
+
+	boolean sendFile(String fileName);
 }

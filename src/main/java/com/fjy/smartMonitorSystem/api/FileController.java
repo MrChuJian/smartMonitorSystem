@@ -96,6 +96,7 @@ public class FileController {
 					// "上传文件过程中出错"
 					return Entity.builder(400).build(20, "上传文件过程中出错", null);
 				}
+				fileService.sendFile(filePath);
 				fileService.saveFile(file2);
 				fileNames.add(fileOriginalName);
 			}

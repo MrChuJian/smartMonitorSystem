@@ -223,6 +223,8 @@ public class UserController {
 			return Entity.success(avatar);
 		} else {
 			return Entity.failure(1, "没有头像");
+			
+			
 		}
 		  
 	}
