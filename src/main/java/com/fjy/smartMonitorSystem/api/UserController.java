@@ -224,7 +224,7 @@ public class UserController {
 		} else {
 			return Entity.failure(1, "没有头像");
 		}
-		
+		  
 	}
 
 }
