@@ -236,8 +236,9 @@ public class UserController {
 			@PathVariable String phone) {
 		List<User> users =  userService.getFriends(phone);
 		List<UserVo2> users2 = new LinkedList<>();
-		UserVo2 user2 = new UserVo2();
+		
 		for (User user : users) {
+			UserVo2 user2 = new UserVo2();
 			BeanUtils.copyProperties(user, user2);
 			users2.add(user2);
 		}
