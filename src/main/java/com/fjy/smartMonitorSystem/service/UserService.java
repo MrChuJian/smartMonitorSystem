@@ -1,5 +1,7 @@
 package com.fjy.smartMonitorSystem.service;
 
+import java.util.List;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fjy.smartMonitorSystem.model.User;
@@ -16,6 +18,8 @@ public interface UserService{
 	byte[] getAvatar(String fileName) throws Exception;
 
 	UserVo getByPhone(String phone);
+
+	List<User> getFriends(String phone);
 
 
 }

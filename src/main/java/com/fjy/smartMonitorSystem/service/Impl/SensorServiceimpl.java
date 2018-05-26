@@ -12,9 +12,10 @@ import com.fjy.smartMonitorSystem.model.Location;
 import com.fjy.smartMonitorSystem.model.SB;
 import com.fjy.smartMonitorSystem.model.Sensor;
 import com.fjy.smartMonitorSystem.model.Vo.SensorVo;
-import com.fjy.smartMonitorSystem.netty.handler.SimpleChatClientHandler;
 import com.fjy.smartMonitorSystem.netty.handler.SimpleChatServerHandler;
 import com.fjy.smartMonitorSystem.service.SensorService;
+
+import io.netty.channel.group.ChannelGroup;
 
 @Service
 public class SensorServiceimpl implements SensorService {
@@ -27,7 +28,12 @@ public class SensorServiceimpl implements SensorService {
 	@Override
 	public boolean sava(Sensor sensor) {
 		if (sensorMapper.save(sensor) > 0) {
-			SimpleChatServerHandler.chats.writeAndFlush(new SB<Double>(11, sensor.getType(), sensor.getData()));
+			ChannelGroup chats = SimpleChatServerHandler.chats;
+			if(chats != null && chats.size() > 0) {
+				chats.writeAndFlush(new SB<Double>(11, sensor.getType(), sensor.getData()));
+			} else {
+				System.out.println("111");
+			}
 			return true;
 		}
 		return false;

@@ -3,6 +3,7 @@ package com.fjy.smartMonitorSystem.service.Impl;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
@@ -105,4 +106,9 @@ public class UserServiceImpl implements UserService {
 		return user;
 	}
 
+	@Override
+	public List<User> getFriends(String phone) {
+		List<User> users = userMapper.getFriendsByPhone(phone);
+		return users;
+	}
 }

@@ -2,6 +2,7 @@ package com.fjy.smartMonitorSystem.api;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -223,10 +224,15 @@ public class UserController {
 			return Entity.success(avatar);
 		} else {
 			return Entity.failure(1, "没有头像");
-			
-			
 		}
-		  
+	}
+	
+	@ApiOperation(value = "获取好友信息", notes = "获取好友信息 ")
+	@RequestMapping(value = "/phone/{phone}/Friends", method = RequestMethod.GET)
+	public ResponseEntity<Entity<List<User>>> getFriends(HttpServletRequest request,
+			@PathVariable String phone) {
+		List<User> users =  userService.getFriends(phone);
+		return Entity.success(users);
 	}
 
 }

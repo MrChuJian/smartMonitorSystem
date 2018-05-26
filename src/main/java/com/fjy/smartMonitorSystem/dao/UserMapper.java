@@ -1,5 +1,7 @@
 package com.fjy.smartMonitorSystem.dao;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
@@ -21,5 +23,8 @@ public interface UserMapper extends BaseMapper{
 
 	@Select("select * from user where phone = #{phone}")
 	UserVo getByPhone(String phone);
+
+	@Select("select username, phone, sex, addr, avatarUrl as avatar from user where phone != #{phone}")
+	List<User> getFriendsByPhone(String phone);
 
 }

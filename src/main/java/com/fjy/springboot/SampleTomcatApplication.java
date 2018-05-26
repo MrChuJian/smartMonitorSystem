@@ -27,7 +27,7 @@ public class SampleTomcatApplication  {
     	Timer timer;
     	timer = new Timer(true);
     	timer.schedule(new DeleteDirTimer(), 0, 24L*60*60*1000);
-    	timer.schedule(new VideoTimer(), 10000, 1000);
+//    	timer.schedule(new VideoTimer(), 10000, 1000);
     	Thread serverSocket = new SocketAcceptThread();
 		serverSocket.start();
     	Thread thread = new NettyServerThread();
