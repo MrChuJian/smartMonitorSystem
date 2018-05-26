@@ -2,6 +2,7 @@ package com.fjy.smartMonitorSystem.api;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fjy.smartMonitorSystem.model.Entity;
 import com.fjy.smartMonitorSystem.model.User;
 import com.fjy.smartMonitorSystem.model.Vo.UserVo;
+import com.fjy.smartMonitorSystem.model.Vo.UserVo2;
 import com.fjy.smartMonitorSystem.service.UserService;
 import com.fjy.smartMonitorSystem.util.CaptchaUtil;
 
@@ -229,10 +232,16 @@ public class UserController {
 	
 	@ApiOperation(value = "获取好友信息", notes = "获取好友信息 ")
 	@RequestMapping(value = "/phone/{phone}/Friends", method = RequestMethod.GET)
-	public ResponseEntity<Entity<List<User>>> getFriends(HttpServletRequest request,
+	public ResponseEntity<Entity<List<UserVo2>>> getFriends(HttpServletRequest request,
 			@PathVariable String phone) {
 		List<User> users =  userService.getFriends(phone);
-		return Entity.success(users);
+		List<UserVo2> users2 = new LinkedList<>();
+		UserVo2 user2 = new UserVo2();
+		for (User user : users) {
+			BeanUtils.copyProperties(user, user2);
+			users2.add(user2);
+		}
+		return Entity.success(users2);
 	}
 
 }
