@@ -31,34 +31,28 @@ public class SocketUtil {
 		if(sockets.size() <= 0) {
 			return false;
 		}
-		System.out.println("111");
 		for (Socket socket : sockets) {
-			System.out.println("000");
 			try {
-				socket.sendUrgentData(-1);
+				if(socket.isClosed()) {
+					throw new Exception("");
+				}
+				PrintWriter writer=new PrintWriter(socket.getOutputStream());
+				writer.println(i);
+				writer.flush();
+				logger.info("向硬件发送" + i);
 			} catch (IOException e) {
+				e.printStackTrace();
+				sockets.remove(socket);
 				try {
 					socket.close();
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
-				sockets.remove(socket);
-				e.printStackTrace();
-				if(sockets.size() <= 0) {
-					return false;
-				}
-			}
-			try {
-				PrintWriter writer=new PrintWriter(socket.getOutputStream());
-				writer.println(i);
-				writer.flush();
-			} catch (IOException e) {
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 		return true;
-		
 	}
-	
-	
 }
