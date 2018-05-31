@@ -33,6 +33,7 @@ public class SensorServiceimpl implements SensorService {
 			if(chats != null && chats.size() > 0) {
 				// 数据传输到客户端
 				chats.writeAndFlush(new SB<Double>(11, sensor.getType(), sensor.getData()));
+				System.out.println("asd");
 			} else {
 				System.out.println("没有客户端连接");
 			}
