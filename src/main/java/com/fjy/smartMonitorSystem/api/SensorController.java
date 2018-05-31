@@ -3,6 +3,8 @@ package com.fjy.smartMonitorSystem.api;
 import java.sql.Timestamp;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -28,6 +30,7 @@ public class SensorController {
 	
 	@Autowired
 	private SensorService sensorService;
+	private Log logger = LogFactory.getLog(SensorController.class);
 
 	@ApiOperation(value = "上传传感器数据", notes = "type:数据的类型(自定义,比如温度叫temperature)")
 	@RequestMapping(value = "/{type}", method = RequestMethod.POST)
@@ -37,6 +40,7 @@ public class SensorController {
 		sensor.setData(data);
 		sensor.setCreateTime(new Timestamp(System.currentTimeMillis()));
 		if (sensorService.sava(sensor)) {
+			logger.info("保存" + sensor.getType() + ":" + sensor.getData() +"成功");
 			return Entity.success(sensor.toString());
 		};
 		return Entity.failure(0, "保存失败哦");

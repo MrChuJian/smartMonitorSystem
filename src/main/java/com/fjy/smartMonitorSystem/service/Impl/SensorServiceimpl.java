@@ -31,8 +31,9 @@ public class SensorServiceimpl implements SensorService {
 			ChannelGroup chats = SimpleChatServerHandler.chats;
 			if(chats != null && chats.size() > 0) {
 				chats.writeAndFlush(new SB<Double>(11, sensor.getType(), sensor.getData()));
+				System.out.println("asd");
 			} else {
-				System.out.println("111");
+				System.out.println("没有客户端连接");
 			}
 			return true;
 		}
