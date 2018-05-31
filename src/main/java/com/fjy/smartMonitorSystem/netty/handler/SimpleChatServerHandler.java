@@ -108,7 +108,7 @@ public class SimpleChatServerHandler extends ChannelInboundHandlerAdapter {
         	isSend = SocketUtil.send((Integer)entity.getData());
         	if(isSend) {
         		entity = new SB<>();
-            	entity.setCode(200);
+            	entity.setCode(400);
             	entity.setMsg("发送成功");
             	incomming.writeAndFlush(entity);
         	} else {
