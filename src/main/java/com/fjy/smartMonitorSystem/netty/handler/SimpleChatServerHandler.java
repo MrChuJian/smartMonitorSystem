@@ -105,16 +105,19 @@ public class SimpleChatServerHandler extends ChannelInboundHandlerAdapter {
         // code=21 控制硬件设备指令
         if(entity.getCode() == 21) {
         	boolean isSend = false;
-        	isSend = SocketUtil.send((Integer)entity.getData());
+        	Integer data = (Integer)entity.getData();
+        	isSend = SocketUtil.send(data);
         	if(isSend) {
         		entity = new SB<>();
             	entity.setCode(400);
             	entity.setMsg("发送成功");
+            	entity.setData(data);
             	incomming.writeAndFlush(entity);
         	} else {
         		entity = new SB<>();
             	entity.setCode(404);
             	entity.setMsg("硬件没有连接服务器");
+            	entity.setData(data);
             	incomming.writeAndFlush(entity);
         	}
         }
