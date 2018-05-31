@@ -1,9 +1,12 @@
 package com.fjy.smartMonitorSystem.util;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -15,6 +18,7 @@ public class SocketUtil {
 	public static ServerSocket server = null;
 	public static List<Socket> sockets = new LinkedList<>();
 	private static Log logger = LogFactory.getLog(SocketUtil.class);
+	private static Integer count = 0;
 	
 	public static boolean start() {
 		try {
@@ -36,21 +40,38 @@ public class SocketUtil {
 				if(socket.isClosed()) {
 					throw new Exception("");
 				}
+				socket.setSoTimeout(1000);
 				PrintWriter writer=new PrintWriter(socket.getOutputStream());
 				writer.println(i);
 				writer.flush();
 				logger.info("向硬件发送" + i);
-			} catch (IOException e) {
-				e.printStackTrace();
+				BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+				String rl = br.readLine();
+				logger.info("硬件响应:" + rl);
+			} catch (SocketTimeoutException e) {
+				if(count < 3) {
+					count++;
+					logger.info("没有收到硬件反馈，第" + count + "次重新发送");
+					return send(i);
+				} else {
+					count = 0;
+					logger.info("重新发送三次失败，发送失败");
+					return false;
+				}
+				
+			}
+			catch (IOException e) {
+				logger.info("硬件断开连接");
 				sockets.remove(socket);
 				try {
 					socket.close();
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
+				return false;
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
+				return false;
 			}
 		}
 		return true;

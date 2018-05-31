@@ -3,6 +3,7 @@ package smartMonitorSystem.test;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -17,6 +18,9 @@ public class Test {
 			while((line = in.readLine()) != null) {
 				System.out.println("000");
 				System.out.println(line);
+//				PrintWriter pw = new PrintWriter(socket.getOutputStream());
+//				pw.println("rsp:m");
+//				pw.flush();
 			}
 			
 		} catch (UnknownHostException e) {
