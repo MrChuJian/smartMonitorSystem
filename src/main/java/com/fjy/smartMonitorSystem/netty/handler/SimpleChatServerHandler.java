@@ -62,6 +62,7 @@ public class SimpleChatServerHandler extends ChannelInboundHandlerAdapter {
         Channel incomming = ctx.channel();
         //将收到的信息转发给全部的客户端channel
         SB entity = (SB)msg;
+        // code=1 文本
         if(entity.getCode() == 1) {
         	for(Channel channel:chats){
                 if(channel == incomming) {
@@ -71,7 +72,7 @@ public class SimpleChatServerHandler extends ChannelInboundHandlerAdapter {
                 }
             }
         }
-        
+        // code=2 照片
         if(entity.getCode() == 2) {
         	for(Channel channel:chats){
                 if(channel == incomming) {
@@ -81,7 +82,7 @@ public class SimpleChatServerHandler extends ChannelInboundHandlerAdapter {
                 }
             }
         }
-        
+        // code=3 视频开始播放
         if(entity.getCode() == 3) {
         	if(!videos.contains(incomming)) {
         		videos.add(incomming);
@@ -91,7 +92,7 @@ public class SimpleChatServerHandler extends ChannelInboundHandlerAdapter {
         	entity.setMsg("开始播放");
         	incomming.writeAndFlush(entity);
         }
-        
+        // code=4 视频停止播放
         if(entity.getCode() == 4) {
         	if(videos.contains(incomming)) {
         		videos.remove(incomming);
@@ -101,7 +102,7 @@ public class SimpleChatServerHandler extends ChannelInboundHandlerAdapter {
         	entity.setMsg("暂停播放");
         	incomming.writeAndFlush(entity);
         }
-        
+        // code=21 控制硬件设备指令
         if(entity.getCode() == 21) {
         	boolean isSend = false;
         	isSend = SocketUtil.send((Integer)entity.getData());
@@ -147,7 +148,7 @@ public class SimpleChatServerHandler extends ChannelInboundHandlerAdapter {
 
     /**
      * 当服务端的IO 抛出异常时被调用
-     * @param ctx
+     * @param ctx                                              
      * @param cause
      * @throws Exception
      */

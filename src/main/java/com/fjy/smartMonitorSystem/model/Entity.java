@@ -11,6 +11,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
+/**
+ * 封装任意返回信息实体（用户、传感器、文件、字符串）
+ * @author Tomato
+ * HTTP传输时候使用该类封装
+ * @param <T>
+ */
 
 public class Entity<T> implements Serializable{
 	private int code;

@@ -2,6 +2,14 @@ package com.fjy.smartMonitorSystem.model;
 
 import java.io.Serializable;
 
+/**
+ * 封装信息
+ * @author Tomato
+ * netty使用该类封装，保证包名、类名等信息一致
+ * @param <T>
+ */
+
+
 public class SB<T> implements Serializable{
 
 	private int code;

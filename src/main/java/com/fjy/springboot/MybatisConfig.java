@@ -17,7 +17,11 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
 import com.fjy.smartMonitorSystem.dao.BaseMapper;
 import com.fjy.smartMonitorSystem.model.BaseModel;
-
+/**
+ * 
+ * @author Tomato
+ *
+ */
 @Configuration
 public class MybatisConfig implements ApplicationContextAware{
 

@@ -2,7 +2,11 @@ package com.fjy.smartMonitorSystem.util;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
-
+/**
+ * 加密工具类
+ * @author Tomato
+ *
+ */
 public class Base58 {
 	public static final char[] ALPHABET = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
 			.toCharArray();

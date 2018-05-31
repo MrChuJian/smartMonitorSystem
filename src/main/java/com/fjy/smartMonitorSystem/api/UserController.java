@@ -81,6 +81,7 @@ public class UserController {
 		user.setAddr(addr);
 		user.setCode(code);
 		user.setSex(sex);
+		// 以phone-logup-code形式获得验证码
 		if (!code.toLowerCase().equals(request.getSession().getAttribute(phone + "-logup-code"))
 				&& !code.equals("123456")) {
 			return Entity.failure(38, "验证码错误");
@@ -89,12 +90,13 @@ public class UserController {
 		if (exist == true) {
 			return Entity.failure(38, "该手机已注册");
 		}
+		// 移除验证码
 		request.getSession().removeAttribute(phone + "-logup-code");
 		try {
 			userService.logup(user,avatar);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return Entity.builder(400).build(20, "上传文件过程中出错", null);
+			return Entity.builder(400	).build(20, "上传文件过程中出错", null);
 		}
 		return Entity.success("注册成功");
 	}
@@ -150,7 +152,6 @@ public class UserController {
 		captcha.createImage();
 		// BufferedImage bi = captcha.createImage();
 		try {
-
 			// ImageIO.write(bi, "JPEG", response.getOutputStream());
 			request.getSession().setAttribute(phone + "-" + type + "-code", captcha.getText().toLowerCase());
 		} catch (Exception e) {

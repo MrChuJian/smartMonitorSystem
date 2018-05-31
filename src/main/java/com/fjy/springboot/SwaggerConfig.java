@@ -13,6 +13,12 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+/**
+ * Servlet测试
+ * @author Tomato
+ * http://localhost:3838/shabi/swagger-ui.html 测试Servlet，看APP端、硬件端数据交互
+ */
+
 @Configuration
 @EnableSwagger2
 public class SwaggerConfig {

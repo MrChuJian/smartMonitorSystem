@@ -56,12 +56,14 @@ public class FileController {
 				logger.debug("文件类型: " + myfile.getContentType());
 				logger.debug("文件名称: " + myfile.getName());
 				logger.debug("文件原名: " + fileOriginalName);
+				// 获取文件.后的后缀名
 				String extName = FilenameUtils.getExtension(fileOriginalName);
 				if (StringUtil.isNull(extName)) {
 					extName = "unknown";
 				}
 				// 生成新文件名
 				Date date = new Date();
+				// uuid的唯一性，避免同名覆盖文件
 				String uuidId = StringUtil.getUUID(date, UUID.randomUUID());
 				// 获取文件存储的路径
 				String basePath = "/tmp/files";
@@ -78,6 +80,7 @@ public class FileController {
 				String dateStr = file2.getCreateTime().toString();
 		    	int i = dateStr.indexOf(":");
 		    	String dateName = dateStr.substring(0, i).replaceAll(" ", "-");
+		    	// 文件路径/tmp/files/upload/年-月-日-时
 		    	String filePath = folderPath + "/upload/" + extName + File.separator + dateName + File.separator;
 				File f = new File(filePath);
 				if (!f.exists()) {
@@ -90,16 +93,20 @@ public class FileController {
 				File file = new File(filePath);
 				// 这里不必处理IO流关闭的问题，因为FileUtils.copyInputStreamToFile()方法内部会自动把用到的IO流关掉
 				try {
+					//进行文件中的内容以二进制形式存到文件路径
 					FileUtils.copyInputStreamToFile(myfile.getInputStream(), file);
 				} catch (IOException e) {
 					logger.error("上传文件过程中出错", e);
 					// "上传文件过程中出错"
 					return Entity.builder(400).build(20, "上传文件过程中出错", null);
 				}
-				fileService.sendFile(filePath);
+				fileService.sendFile(filePath + "文件上传成功");
+				// 保存至数据库
 				fileService.saveFile(file2);
+				// 添加多文件进表
 				fileNames.add(fileOriginalName);
 			}
+			//返回给APP端或设备端
 			return Entity.success(fileNames);
 		} catch (Throwable t) {
 			logger.error("上传文件失败", t);

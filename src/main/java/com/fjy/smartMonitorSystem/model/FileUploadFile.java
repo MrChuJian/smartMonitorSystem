@@ -2,6 +2,12 @@ package com.fjy.smartMonitorSystem.model;
 
 import java.io.Serializable;
 
+/**
+ * 
+ * @author Tomato
+ *
+ */
+
 public class FileUploadFile implements Serializable {
 
 

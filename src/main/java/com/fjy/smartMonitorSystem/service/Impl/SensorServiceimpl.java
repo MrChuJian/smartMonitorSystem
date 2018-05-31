@@ -27,12 +27,14 @@ public class SensorServiceimpl implements SensorService {
 
 	@Override
 	public boolean sava(Sensor sensor) {
+		// 数据保存至数据库
 		if (sensorMapper.save(sensor) > 0) {
 			ChannelGroup chats = SimpleChatServerHandler.chats;
 			if(chats != null && chats.size() > 0) {
+				// 数据传输到客户端
 				chats.writeAndFlush(new SB<Double>(11, sensor.getType(), sensor.getData()));
 			} else {
-				System.out.println("111");
+				System.out.println("没有客户端连接");
 			}
 			return true;
 		}

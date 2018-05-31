@@ -3,6 +3,12 @@ package com.fjy.smartMonitorSystem.model.Vo;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+/**
+ * 接收数据
+ * @author Tomato
+ * 接收传感器数据后转换成数据库类型再进行保存
+ */
+
 public class SensorVo implements Serializable{
 	private String type;
 	private String unit;
