@@ -100,7 +100,7 @@ public class FileController {
 					// "上传文件过程中出错"
 					return Entity.builder(400).build(20, "上传文件过程中出错", null);
 				}
-				fileService.sendFile(filePath + "文件上传成功");
+				fileService.sendFile(filePath);
 				// 保存至数据库
 				fileService.saveFile(file2);
 				// 添加多文件进表
